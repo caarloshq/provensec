@@ -4,6 +4,7 @@
 // 2. ProvenSec scanned by itself: zero leaked-secret candidates.
 // 3. Every rule test passes.
 // 4. Every relative markdown link resolves.
+// 5. Skill frontmatter is strict YAML.
 import { execFileSync } from 'node:child_process'
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs'
 import { join, dirname, relative } from 'node:path'
@@ -50,6 +51,15 @@ function report(out) {
 // 3. Rule tests.
 try { execFileSync('node', [join(ROOT, 'skills/provensec-app/scripts/rules.test.mjs')], { stdio: 'pipe' }) }
 catch (e) { problems.push(`rule tests failed:\n${e.stdout}`) }
+
+// 5. Skill frontmatter must be strict YAML: an unquoted description with ": " breaks
+//    installers like `npx skills`, even though Claude Code tolerates it.
+for (const f of files.filter(f => f.endsWith('SKILL.md'))) {
+  const m = readFileSync(f, 'utf-8').match(/^description: (.*)$/m)
+  if (!m) { problems.push(`no description · ${relative(ROOT, f)}`); continue }
+  const d = m[1]
+  if (!/^['"]/.test(d) && /: |#\s/.test(d)) problems.push(`unquoted description with ": " breaks YAML · ${relative(ROOT, f)}`)
+}
 
 // 4. Relative links.
 for (const f of files.filter(f => f.endsWith('.md'))) {

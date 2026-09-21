@@ -1,6 +1,6 @@
 ---
 name: provensec-skill-audit
-description: Audits a third-party skill, plugin or agent package BEFORE it is installed. Mechanically lists suspicious lines (hidden instructions to the agent, reading credentials, sending data out, download-and-execute, admin privileges, touching agent settings or hooks, scheduled persistence, compiled files) and decides each by hand with ProvenSec's verdict rule. Runs offline, no Python, sends nothing anywhere. Use when asked to download, install, vendor or evaluate a third-party skill, plugin or MCP, or "is this skill safe?", "should I install this?". Not for an app's code: that is provensec-app.
+description: 'Audits a third-party skill, plugin or agent package BEFORE it is installed. Mechanically lists suspicious lines (hidden instructions to the agent, reading credentials, sending data out, download-and-execute, admin privileges, touching agent settings or hooks, scheduled persistence, compiled files) and decides each by hand with ProvenSec''s verdict rule. Runs offline, no Python, sends nothing anywhere. Use when asked to download, install, vendor or evaluate a third-party skill, plugin or MCP, or "is this skill safe?", "should I install this?". Not for an app''s code: that is provensec-app.'
 license: MIT
 metadata:
   version: 1.0.0
