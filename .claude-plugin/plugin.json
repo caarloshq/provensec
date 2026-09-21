@@ -1,0 +1,10 @@
+{
+  "name": "provensec",
+  "version": "1.0.0",
+  "description": "Not secure until proven. Zero-dependency security review for AI coding agents: leaked keys in git history, insecure code patterns, a 43-item app catalog, and third-party skill audits. Nothing leaves your machine.",
+  "author": { "name": "Carlos Henrique", "url": "https://github.com/caarloshq" },
+  "homepage": "https://github.com/caarloshq/provensec",
+  "repository": "https://github.com/caarloshq/provensec",
+  "license": "MIT",
+  "keywords": ["security", "secrets", "audit", "skills", "supabase", "nextjs"]
+}

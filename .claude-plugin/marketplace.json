@@ -1,0 +1,17 @@
+{
+  "name": "provensec",
+  "owner": {
+    "name": "Carlos Henrique",
+    "url": "https://github.com/caarloshq"
+  },
+  "plugins": [
+    {
+      "name": "provensec",
+      "source": "./",
+      "description": "Not secure until proven. Zero-dependency security review for AI coding agents."
+    }
+  ],
+  "metadata": {
+    "description": "ProvenSec: not secure until proven. Zero-dependency security review for AI coding agents."
+  }
+}
