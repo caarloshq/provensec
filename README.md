@@ -137,6 +137,10 @@ For that layer, ProvenSec includes a catalog of **43 security checks**, ordered 
 
 The flow starts with a five-minute private-window test and progressively moves into deeper authorization and application behavior.
 
+The [availability and incident evidence guide](skills/provensec/availability.md) adds
+deployment-specific checks for health, external availability, safe errors and
+receipt of alerts. It reuses A27 and A32; ProvenSec does not operate a monitor.
+
 ### Third-party AI skills
 
 Installing an agent skill means giving code and instructions access to your development environment.

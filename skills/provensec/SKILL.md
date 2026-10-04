@@ -17,6 +17,7 @@ a machine verifies, not something an agent feels. Exit 0, or it is not ready.
 |---|---|---|
 | **App code at rest:** leaked keys on disk and in git history, insecure defaults, dangerous patterns, dependencies | [`../provensec-app/SKILL.md`](../provensec-app/SKILL.md) | Mechanical. Zero dependencies |
 | **Live app and API:** open routes, other users' data, sessions, forms | [`catalog.md`](catalog.md) and the guides in [`../provensec-app/guides/`](../provensec-app/guides/) | By hand, with a guide. Labeled `WEAK EVIDENCE (manual audit)` |
+| **Availability and incident evidence:** health, external checks, safe errors, received alerts | [`availability.md`](availability.md), using A27 and A32 in [`catalog.md`](catalog.md) | Guided, deployment-specific checks. Unrun tests stay `NOT VERIFIED`; no continuous monitoring |
 | **A third-party skill, plugin or MCP**, before it is installed | [`../provensec-skill-audit/SKILL.md`](../provensec-skill-audit/SKILL.md) | Mechanical candidate list, decided by hand |
 | **A server or VPS** (firewall, SSH, open ports, TLS, exposed database) | Not bundled. Use the MIT package [`@onovoprogramador/onp-security-vps`](https://www.npmjs.com/package/@onovoprogramador/onp-security-vps) by Vitor Manoel, which follows the same philosophy: a guard that blocks weakening actions and a mechanical gate | Its own 42 rules and exit codes |
 

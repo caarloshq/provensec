@@ -17,6 +17,10 @@ An item you could not test goes into the report as NOT VERIFIED with the name of
 never as green. Every candidate goes through [`verdict.md`](verdict.md) before it becomes a
 finding.
 
+For availability and incident response, use the [operational evidence guide](availability.md).
+It extends A27 (safe error responses) and A32 (useful retained logs); it is not another
+automated scan or a claim that ProvenSec monitors a running service.
+
 ---
 
 ## Level 0: already open
