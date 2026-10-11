@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "source": { "revision": "example-fixture-v1", "dirty": false },
+  "mode": "quick",
+  "run_status": "complete",
+  "coverage_claim": "bounded",
+  "coverage": [
+    {
+      "id": "auth.session-boundary",
+      "scope": "Illustrative session boundary review; fictional evidence, not an executed audit",
+      "paths": ["src/auth/session.ts"],
+      "status": "covered",
+      "checks": [
+        {
+          "name": "Inspect session verification before protected handler dispatch",
+          "evidence": [
+            {
+              "path": "src/auth/session.ts",
+              "line": 12,
+              "statement": "Fictional example: invalid sessions are rejected before dispatch. A real report must cite observed current-source evidence."
+            }
+          ]
+        }
+      ],
+      "finding_ids": []
+    },
+    {
+      "id": "deployment.configuration",
+      "scope": "Deployment configuration",
+      "paths": ["deploy"],
+      "status": "out_of_scope",
+      "reason": "This illustrative pass covers the source session boundary only.",
+      "checks": [],
+      "finding_ids": []
+    }
+  ],
+  "findings": []
+}

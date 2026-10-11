@@ -1,6 +1,6 @@
 ---
 name: provensec-app
-description: 'Mechanical security scan of an app''s code, with zero dependencies (Node and git only, nothing installed, nothing leaves the machine). Finds leaked keys and passwords on disk and in the full git history (Stripe, AWS, Supabase service role, GitHub, OpenAI and 16 more formats), tracked .env files, insecure defaults (secret with a hardcoded fallback, CORS open to any origin, admin key shipped to the browser) and dangerous patterns (raw HTML on screen, SQL built from text, shell commands built from text). Vulnerable dependencies only with --dependencies, which contacts npm. A stage that did not run shows as ❌, never as green. Live app and API are tested by hand with the guides in guides/. Triggers "any secrets in the code?", "did a key leak?", "audit dependencies", "scan the repo", "review the app''s security". Not for servers or VPS.'
+description: 'Mechanical security scan of an app''s code, with zero dependencies (Node and git only, nothing installed, nothing leaves the machine). Finds leaked keys and passwords on disk and in git history with explicit coverage limits (Stripe, AWS, Supabase service role, GitHub, OpenAI and 16 more formats), tracked .env files, insecure defaults (secret with a hardcoded fallback, CORS open to any origin, admin key shipped to the browser) and dangerous patterns (raw HTML on screen, SQL built from text, shell commands built from text). Vulnerable dependencies only with --dependencies, which contacts npm. A stage that did not run shows as ❌, never as green. Live app and API are tested by hand with the guides in guides/. Triggers "any secrets in the code?", "did a key leak?", "audit dependencies", "scan the repo", "review the app''s security". Not for servers or VPS.'
 license: MIT
 metadata:
   version: 1.0.0
@@ -18,7 +18,7 @@ node <this-skill-dir>/scripts/provensec-app.mjs [--dir <folder>]
 | Exit | Meaning |
 |---|---|
 | **0** | Everything ran and there are no critical or high candidates |
-| **1** | Some stage **did not fully run** (folder without git, git failed). Declared gap, NOT a green |
+| **1** | Some stage **did not fully run** (folder without git, git failed, or history capped by `--commits`). Declared gap, NOT a green |
 | **2** | Critical or high candidates found |
 
 Options: `--dir <folder>` · `--full-history` · `--commits N` (default 400) ·
@@ -36,7 +36,7 @@ line a **candidate**, and every candidate goes through
 
 | Stage | How | Catalog items |
 |---|---|---|
-| Secrets on disk and in history | 21 key formats over current files and over every added line in `git log -p` for the folder. A tracked `.env` is a finding by itself | A02, A05 |
+| Secrets on disk and in history | 21 key formats over current files and over added lines in `git log -p` for the folder, capped by `--commits` unless `--full-history` is set. A tracked `.env` is a finding by itself | A02, A05 |
 | Dangerous and insecure code | 14 rules over JavaScript and TypeScript files (Next.js, React, Vue, Svelte, Astro) | A02, A05, A11, A12, A14, A24, A27, A29, A35, A36, A38 |
 | Vulnerable dependencies | `npm audit`, **only with `--dependencies`** | A28 |
 
@@ -99,3 +99,9 @@ and function-level authorization, adapted from Strix (Apache 2.0). Each says wha
 first (two test accounts, a target you own) and what counts as evidence. Mass assignment, race
 conditions, business logic, JWT and CSRF link from the catalog to the original guides in
 Strix. Every other catalog item carries its own test in the "How to test" column.
+
+## Deeper review
+
+The scanner's JSON is candidate output, not a final audit report. To map coverage, record final verdicts, compare current source with prior runs and obtain independent verification, use the parent [deep audit workflow](../provensec/deep-audit.md). For model-backed applications, use the [AI/MCP guide](guides/ai-mcp.md).
+
+History defaults to at most 400 commits. Use `--full-history` for the entire available history. A cap is a coverage gap and returns exit 1 unless high or critical candidates require exit 2; either result retains the gap.

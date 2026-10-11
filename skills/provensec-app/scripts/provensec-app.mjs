@@ -216,7 +216,7 @@ function report(p, stages) {
   const all = [...map.values()]
   all.sort((a, b) => ORDER[a.severity] - ORDER[b.severity] || a.where.localeCompare(b.where))
   const count = (g) => all.filter(a => a.severity === g).length
-  const gaps = stages.filter(e => !['ran', 'not-requested'].includes(e.status))
+  const gaps = stages.filter(e => e.partial || !['ran', 'not-requested'].includes(e.status))
 
   if (JSON_OUT) {
     console.log(JSON.stringify({ project: { ...p, files: p.files.length }, stages, findings: all }, null, 2))
@@ -226,7 +226,7 @@ function report(p, stages) {
 
     console.log(`${C.b}Coverage${C.n}`)
     for (const e of stages) {
-      const mark = e.status === 'ran' ? `${C.v}✔${C.n}` : e.status === 'not-requested' ? `${C.d}–${C.n}` : `${C.r}❌${C.n}`
+      const mark = e.status === 'ran' && !e.partial ? `${C.v}✔${C.n}` : e.status === 'not-requested' ? `${C.d}–${C.n}` : `${C.r}❌${C.n}`
       const tail = e.status === 'ran'
         ? `${C.d}${e.scope}${e.partial ? ' · PARCIAL' : ''}${C.n}`
         : `${e.status === 'not-requested' ? C.d : C.r}${e.scope ? e.scope + ' · ' : ''}${e.reason}${C.n}${e.fix ? `  ${C.c}→ ${e.fix}${C.n}` : ''}`

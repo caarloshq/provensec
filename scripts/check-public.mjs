@@ -37,20 +37,26 @@ for (const f of files) {
 
 // 2. Self-scan for secrets.
 try {
-  const out = execFileSync('node', [join(ROOT, 'skills/provensec-app/scripts/provensec-app.mjs'), '--dir', ROOT, '--json'], { stdio: ['ignore', 'pipe', 'ignore'] }).toString()
+  const out = execFileSync('node', [join(ROOT, 'skills/provensec-app/scripts/provensec-app.mjs'), '--dir', ROOT, '--full-history', '--json'], { stdio: ['ignore', 'pipe', 'ignore'] }).toString()
   report(out)
 } catch (e) { report(e.stdout?.toString() ?? '') }
 function report(out) {
   let d
   try { d = JSON.parse(out) } catch { problems.push('self-scan did not return JSON'); return }
   const secrets = d.stages.find(s => s.covers.includes('A05') && s.name.startsWith('Secrets'))
-  if (!secrets || secrets.status !== 'ran') problems.push(`self-scan secrets stage did not run (${secrets?.status})`)
+  if (!secrets || secrets.status !== 'ran' || secrets.partial) problems.push(`self-scan secrets stage did not run (${secrets?.status})`)
   for (const f of secrets?.findings ?? []) problems.push(`secret candidate · ${f.where} · ${f.rule}`)
 }
 
 // 3. Rule tests.
 try { execFileSync('node', [join(ROOT, 'skills/provensec-app/scripts/rules.test.mjs')], { stdio: 'pipe' }) }
 catch (e) { problems.push(`rule tests failed:\n${e.stdout}`) }
+
+// Report contract and history regressions are part of the public gate.
+try {
+  execFileSync('node', ['--test', join(ROOT, 'skills/provensec/scripts/validate-report.test.mjs'), join(ROOT, 'scripts/scanner-history.test.mjs')], { stdio: 'pipe' })
+  execFileSync('node', [join(ROOT, 'skills/provensec/scripts/validate-report.mjs'), join(ROOT, 'skills/provensec/examples/audit-report.json')], { stdio: 'pipe' })
+} catch (e) { problems.push(`report/history checks failed:\n${e.stdout ?? ''}\n${e.stderr ?? ''}`) }
 
 // 5. Skill frontmatter must be strict YAML: an unquoted description with ": " breaks
 //    installers like `npx skills`, even though Claude Code tolerates it.
@@ -74,4 +80,4 @@ if (problems.length) {
   console.log(`NOT READY TO PUBLISH · ${problems.length} problem(s)\n  ${problems.join('\n  ')}`)
   process.exit(1)
 }
-console.log(`Ready to publish · ${files.length} files checked · no private references · no secret candidates · rule tests pass · links resolve`)
+console.log(`Ready to publish · ${files.length} files checked · no private references · no secret candidates · rule, history and report checks pass · links resolve`)

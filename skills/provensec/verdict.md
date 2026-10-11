@@ -9,9 +9,8 @@
 ## The inversion
 
 Scanners and models fail in the same direction: they see too many problems and rate them
-too high. So **every candidate starts as dismissed**, and only becomes a finding if it
-survives the three questions below, **in this order**. The first one it fails ends it, and
-the report says which one.
+too high. So **every candidate starts unconfirmed**, and only becomes a finding if it
+survives the three questions below, **in this order**. A disproved question dismisses the claim with counterevidence. An unanswered question leaves it not verified; lack of evidence is not a dismissal.
 
 Before the questions, **restate the candidate in your own words**: who attacks, how they
 get in, what they get. Half of the false alarms die here, because the sentence does not hold.
@@ -24,8 +23,7 @@ get in, what they get. Half of the false alarms die here, because the sentence d
 
 ⚠️ **An environment variable with a fallback is a special case.** If the code says
 `process.env.SECRET || 'dev'`, question 2 does not dismiss it: check whether production
-(Vercel, your server) really sets the variable. It does not, or you cannot see? The
-candidate survives.
+(Vercel, your server) really sets the variable. If it is absent, investigate the reachable fallback and its effect. If configuration cannot be observed, keep the candidate **NOT VERIFIED** with that exact blocker; do not infer a production value.
 
 ## The four report states
 
@@ -65,3 +63,11 @@ variants go through the same three questions.
 | By reading code or testing by hand | **WEAK EVIDENCE (manual audit)** |
 
 Both can appear in the same report. Never present the second with the label of the first.
+
+## Structured reports and independent verification
+
+For saved audit reports, use [report-format.md](report-format.md). Scanner output is a list of candidates and priorities, not this final verdict format. Only confirmed findings receive final severity. A missing best practice without an established boundary failure belongs in a hardening note, not a vulnerability finding.
+
+Use [deep-audit.md](deep-audit.md) when independent verification is requested: the discoverer cannot be the verifier. Preserve the root-cause identity across runs, but establish the current source trace before reusing a verdict. No available independent verifier means not verified, never invented independence.
+
+Report validation checks required fields and relationships. It does not confirm that evidence exists, that a command ran, or that the inventory exhausts the target. Those checks remain explicit review work.

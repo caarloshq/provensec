@@ -1,6 +1,6 @@
 ---
 name: provensec
-description: 'Security review where nothing is "secure" until proven. Routes to three tracks. App code at rest (provensec-app) finds leaked keys on disk and in the full git history, insecure defaults and dangerous code patterns, with zero dependencies (Node and git only, nothing leaves the machine). Live app and API are tested by hand with a 43-item catalog and testing guides. Third-party skills are audited before install (provensec-skill-audit). Every candidate starts dismissed and must survive three questions; every stage reports coverage, and what did not run is never shown as green. Use when asked to review an app''s security, look for leaked secrets, audit dependencies, check a skill, plugin or MCP before installing, or when a password, key or token shows up in chat or logs. Triggers "review the security", "is this exposed?", "did the key leak?", "is this skill safe?", "security audit". Not for UI, accessibility or general code quality.'
+description: 'Security review where nothing is "secure" until proven. Routes to three tracks. App code at rest (provensec-app) finds leaked keys on disk and in git history with explicit coverage limits, insecure defaults and dangerous code patterns, with zero dependencies (Node and git only, nothing leaves the machine). Live app and API are tested by hand with a 43-item catalog and testing guides. Third-party skills are audited before install (provensec-skill-audit). Every candidate is unconfirmed until it survives three questions; every stage reports coverage, and what did not run is never shown as green. Use when asked to review an app''s security, look for leaked secrets, audit dependencies, check a skill, plugin or MCP before installing, or when a password, key or token shows up in chat or logs. Triggers "review the security", "is this exposed?", "did the key leak?", "is this skill safe?", "security audit". Not for UI, accessibility or general code quality.'
 license: MIT
 metadata:
   version: 1.0.0
@@ -9,7 +9,7 @@ metadata:
 # ProvenSec
 
 **Not secure until proven.** The rule behind everything here: "it is secure" is something
-a machine verifies, not something an agent feels. Exit 0, or it is not ready.
+a machine verifies, not something an agent feels. A scanner exit code describes its requested checks; a valid report describes its recorded evidence. Neither alone proves that a product is secure.
 
 ## Route before reading
 
@@ -25,9 +25,15 @@ a machine verifies, not something an agent feels. Exit 0, or it is not ready.
 session and try every route that should require login. Five minutes, binary result, and if
 it fails the rest of the audit can wait.
 
+## Quick checks and deep audits
+
+A focused scan keeps the existing routing below. For an explicitly requested in-depth audit or structured report, load [deep-audit.md](deep-audit.md). It adds coverage units, stable finding identities, current-source revalidation and independent verification. Use [report-format.md](report-format.md) for the report contract and validator. A validator success means contract validity, not a reproduced security result.
+
+For applications using models, agents or MCP, also load the [AI/MCP guide](../provensec-app/guides/ai-mcp.md) when those capabilities cross a trust boundary.
+
 ## How a candidate becomes a finding
 
-One rule for every track: [`verdict.md`](verdict.md). Every candidate starts **dismissed**
+One rule for every track: [`verdict.md`](verdict.md). Every candidate starts **unconfirmed**
 and only becomes a finding if it survives three questions (does it reach production? does
 the attacker control the input? is the protection really missing?). Every stage ends in one
 of four states: **confirmed**, **dismissed with file and line**, **no candidates** (which
@@ -37,7 +43,7 @@ does not prove absence) or **not verified**, with the name of the gap.
 
 | Never | Why |
 |---|---|
-| Send code, diffs or skills to a third-party service | Nothing leaves the machine. **One exception, only when you ask:** `--dependencies` runs `npm audit`, which sends your package list and versions to the npm registry |
+| Add external services to scanner execution | Scanner processing stays local. Agent-assisted reasoning uses the configured agent runtime and its data policy; do not describe it as offline. **One exception, only when you ask:** `--dependencies` runs `npm audit`, which sends your package list and versions to the npm registry |
 | Require installing a tool | Node and git, which you already have. No `brew install`, no Docker, no Python, no API key |
 | Probe a target by itself | The scripts read files and git history, and never probe a host. The only network call is `npm audit`, only with `--dependencies`. Live-app and API tests are done by hand, only against something you own, never against production without the owner saying so. Chat does not widen the scope |
 | Show a credential's value | Only a hint (`len 46 · …a1b2`). Whoever owns the key rotates it |
